@@ -1,0 +1,103 @@
+<!--
+ Copyright (c) 2014. Knowledge Media Institute - The Open University
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!--
+ NodeRed node with support for BLE interaction
+
+ @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
+-->
+
+<script type="text/x-red" data-template-name="noble">
+   <!-- data-template-name identifies the node type this is for              -->
+
+   <!-- Each of the following divs creates a field in the edit dialog.       -->
+   <!-- Generally, there should be an input for each property of the node.   -->
+   <!-- The for and id attributes identify the corresponding property        -->
+   <!-- (with the 'node-input-' prefix).                                     -->
+   <!-- The available icon classes are defined Twitter Bootstrap glyphicons  -->
+
+    <!-- Noble description -->
+    <div class="form-row">
+        <label>&nbsp;</label>
+        <input type="checkbox" id="node-input-duplicates" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-duplicates" style="width: 70%;">Allow duplicates?</label>
+    </div>
+
+    <!-- By convention, most nodes have a 'name' property. The following div -->
+    <!-- provides the necessary field. Should always be the last option      -->
+
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+</script>
+
+
+<!-- Next, some simple help text is provided for the node.                   -->
+<script type="text/x-red" data-help-name="noble">
+    <p>This node allows to interact BLE devices.</p>
+    <p>The current implementation of this node only supports scanning for devices.</p>
+    <p>This node will generate one message per BLE device detected according to the node configuration.</p>
+    <p>The <b>msg.payload</b> will contain the <i>uuid</i> and the <i>local name</i> of the BLE device detected.</p>
+    <p>Additionally it will set the following values:</p>
+    <ul>
+        <li>Sets the <b>msg.uuid</b> to the <i>uuid</i> of the BLE device detected.</li>
+        <li>Sets <b>msg.localName</b> to the name of the device if any.</li>
+        <li>Sets <b>msg.detectedAt</b> to the moment the device was detected on milliseconds since 1 Jan 1970.</li>
+        <li>Sets <b>msg.detectedBy</b> to the name of the machine that detected the BLE device.</li>
+        <li>Sets <b>msg.advertisement</b> to the full advertisement of the BLE device (see Noble documentation).</li>
+    </ul>
+    <p>If the device follows the iBeacon specification, the message will also contain the following properties</p>
+    <ul>
+        <li>Sets the <b>msg.manufacturerUuid</b> to the <i>uuid</i> of the manufacturer of the BLE device detected.</li>
+        <li>Sets the <b>msg.manufacturerUuid</b> to the <i>uuid</i> of the manufacturer of the BLE device detected.</li>
+        <li>Sets the <b>msg.major</b> to the <i>major number</i> of the manufacturer of the BLE device detected.</li>
+        <li>Sets the <b>msg.minor</b> to the <i>minor number</i> of the manufacturer of the BLE device detected.</li>
+        <li>Sets the <b>msg.measuredPower</b> to the <i>measured power at one meter</i> of the BLE device detected.</li>
+        <li>Sets the <b>msg.accuracy</b> to the <i>accuracy</i> estimated for this measurement.</li>
+        <li>Sets the <b>msg.proximity</b> to the <i>proximity</i> guessed for this device. The value will be one of: 'unknown', 'immediate', 'near', 'far' </li>
+    </ul>
+</script>
+
+<!-- Finally, the node type is registered along with all of its properties   -->
+<!-- The example below shows a small subset of the properties that can be set-->
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('noble',{
+        category: 'input',      // the palette category
+        color:"#C0DEED",
+        defaults: {             // defines the editable properties of the node
+            duplicates: {value:false},
+            name: {value:""}
+        },
+        inputs:0,               // set the number of inputs - only 0 or 1
+        outputs:1,              // set the number of outputs - 0 to n
+        // set the icon (held in icons dir below where you save the node)
+        icon: "bluetooth.png",     // saved in  icons/myicon.png
+        label: function() {     // sets the default label contents
+            if (this.name) {
+                return this.name;
+            } else {
+                return "scan BLE";
+            }
+        },
+        labelStyle: function() { // sets the class to apply to the label
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
