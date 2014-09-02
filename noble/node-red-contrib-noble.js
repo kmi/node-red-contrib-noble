@@ -29,27 +29,31 @@ module.exports = function(RED) {
     function NobleScan(n) {
         // Create a RED node
         RED.nodes.createNode(this,n);
-    
+
         // Store local copies of the node configuration (as defined in the .html)
-        this.duplicates = n.api;
+        this.duplicates = n.duplicates;
+        this.uuids = [];
+        if (n.uuids != undefined && n.uuids !== "") {
+            this.uuids = n.uuids.split(',');    //obtain array of uuids
+        }
 
         var node = this;
         var machineId = os.hostname();
 
         noble.on('discover', function(peripheral) {
 
-            var bleacon = { payload:{uuid:peripheral.uuid, localName: peripheral.advertisement.localName} };
-            bleacon.uuid = peripheral.uuid;
-            bleacon.localName = peripheral.advertisement.localName;
-            bleacon.detectedAt = new Date().getTime();
-            bleacon.detectedBy = machineId;
-            bleacon.advertisement = peripheral.advertisement;
+            var msg = { payload:{peripheralUuid:peripheral.uuid, localName: peripheral.advertisement.localName} };
+            msg.peripheralUuid = peripheral.uuid;
+            msg.localName = peripheral.advertisement.localName;
+            msg.detectedAt = new Date().getTime();
+            msg.detectedBy = machineId;
+            msg.advertisement = peripheral.advertisement;
 
             // Check the BLE follows iBeacon spec
             if (peripheral.manufacturerData) {
                 // http://www.theregister.co.uk/2013/11/29/feature_diy_apple_ibeacons/
                 if (peripheral.manufacturerData.length >= 25) {
-                    var uuid = peripheral.manufacturerData.slice(4, 20).toString('hex');
+                    var proxUuid = peripheral.manufacturerData.slice(4, 20).toString('hex');
                     var major = peripheral.manufacturerData.readUInt16BE(20);
                     var minor = peripheral.manufacturerData.readUInt16BE(22);
                     var measuredPower = peripheral.manufacturerData.readInt8(24);
@@ -67,25 +71,33 @@ module.exports = function(RED) {
                         proximity = 'far';
                     }
 
-                    bleacon.manufacturerUuid = uuid;
-                    bleacon.major = major;
-                    bleacon.minor = minor;
-                    bleacon.measuredPower = measuredPower;
-                    bleacon.accuracy = accuracy;
-                    bleacon.proximity = proximity;
+                    msg.manufacturerUuid = proxUuid;
+                    msg.major = major;
+                    msg.minor = minor;
+                    msg.measuredPower = measuredPower;
+                    msg.accuracy = accuracy;
+                    msg.proximity = proximity;
                 }
             }
 
             // Generate output event
-            node.send(bleacon);
+            node.send(msg);
         });
 
+        // deal with state changes
+        noble.on('stateChange', function(state) {
+            if (state === 'poweredOn') {
+                noble.startScanning(node.uuids, node.duplicates);
+            } else {
+                noble.stopScanning();
+            }
+        });
+
+        // start initially
         if (noble.state === 'poweredOn') {
-            noble.startScanning([], n.duplicates);
+            noble.startScanning(node.uuids, node.duplicates);
         } else {
-            noble.on('stateChange', function() {
-                noble.startScanning([],  n.duplicates);
-            });
+            this.warn("Unable to start BLE scan. Adapter state: " + noble.state);
         }
     
         this.on("close", function() {
@@ -93,6 +105,14 @@ module.exports = function(RED) {
             // Allows ports to be closed, connections dropped etc.
             // eg: this.client.disconnect();
             noble.stopScanning();
+        });
+
+        noble.on('scanStart', function() {
+            node.log("Scanning for BLEs started. UUIDs: " + node.uuids + " - Duplicates allowed: " + node.duplicates);
+        });
+
+        noble.on('scanStop', function() {
+            node.log("Scanning for BLEs stopped. ");
         });
     }
     

@@ -29,7 +29,14 @@
    <!-- (with the 'node-input-' prefix).                                     -->
    <!-- The available icon classes are defined Twitter Bootstrap glyphicons  -->
 
-    <!-- Noble description -->
+    <!-- Limit to list of UUIDs -->
+    <div class="form-row">
+        <label for="node-input-uuids"><i class="fa fa-tasks"></i> Restrict by Service UUID</label>
+        <input type="text" id="node-input-uuids" placeholder="Comma separated list">
+    </div>
+    <div class="form-tips">Leave empty for scanning all devices offering any service.</div>
+
+    <!-- Allow duplicates -->
     <div class="form-row">
         <label>&nbsp;</label>
         <input type="checkbox" id="node-input-duplicates" style="display: inline-block; width: auto; vertical-align: top;">
@@ -40,7 +47,7 @@
     <!-- provides the necessary field. Should always be the last option      -->
 
     <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
 
@@ -49,12 +56,12 @@
 
 <!-- Next, some simple help text is provided for the node.                   -->
 <script type="text/x-red" data-help-name="scan ble">
-    <p>This node allows scanning for BLE devices.</p>
+    <p>This node allows scanning for BLE devices, restricted if necessary by the services they offer.</p>
     <p>This node will generate one message per BLE device detected according to the node configuration.</p>
-    <p>The <b>msg.payload</b> will contain the <i>uuid</i> and the <i>local name</i> of the BLE device detected.</p>
+    <p>The <b>msg.payload</b> will contain the <i>peripheral uuid</i> and the <i>local name</i> of the BLE device detected.</p>
     <p>Additionally it will set the following values:</p>
     <ul>
-        <li>Sets the <b>msg.uuid</b> to the <i>uuid</i> of the BLE device detected.</li>
+        <li>Sets the <b>msg.peripheralUuid</b> to the <i>peripheral uuid</i> of the BLE device detected.</li>
         <li>Sets <b>msg.localName</b> to the name of the device if any.</li>
         <li>Sets <b>msg.detectedAt</b> to the moment the device was detected on milliseconds since 1 Jan 1970.</li>
         <li>Sets <b>msg.detectedBy</b> to the name of the machine that detected the BLE device.</li>
@@ -62,7 +69,6 @@
     </ul>
     <p>If the device follows the iBeacon specification, the message will also contain the following properties</p>
     <ul>
-        <li>Sets the <b>msg.manufacturerUuid</b> to the <i>uuid</i> of the manufacturer of the BLE device detected.</li>
         <li>Sets the <b>msg.manufacturerUuid</b> to the <i>uuid</i> of the manufacturer of the BLE device detected.</li>
         <li>Sets the <b>msg.major</b> to the <i>major number</i> of the manufacturer of the BLE device detected.</li>
         <li>Sets the <b>msg.minor</b> to the <i>minor number</i> of the manufacturer of the BLE device detected.</li>
@@ -81,6 +87,7 @@
         category: 'advanced',      // the palette category
         color:"#C0DEED",
         defaults: {             // defines the editable properties of the node
+            uuids: {value:"", validate:RED.validators.regex(/^([a-fA-F0-9]{32}){0,1}(?:,[a-fA-F0-9]{32})*$/)},
             duplicates: {value:false},
             name: {value:""}
         },
