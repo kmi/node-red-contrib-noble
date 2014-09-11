@@ -4,7 +4,7 @@ This is a node for [NodeRed](http://nodered.org) a tool for easily wiring togeth
 To this end this node relies on the [noble](https://github.com/sandeepmistry/noble) Node.js library.
 
 This node is a based on the [initial scan BLE node](http://blog.buildinginternetofthings.com/2013/10/12/using-node-red-to-scan-for-ble-devices/) by Charalampos Doukas.
-It has, however, been reimplemented for providing more fine grained access to the underyling BLE scanning process. Users can now limit the scans by providing a list of Service UUIDs to be detected and whether duplicate detections should be allowed. 
+It has, however, been reimplemented for providing more fine grained access to the underyling BLE scanning process. Users can now limit the scans by providing a list of Service UUIDs to be detected and indicating whether duplicate detections should be allowed. 
 The node also provides richer information about the detected devices including the peripheral UUID, all services exposed, etc. In doing this new version of the node we have also repackaged the node as an installable NPM package. 
           
 Note: Noble currently only support Mac OS X and Linux. Other platforms will be developed later on.
