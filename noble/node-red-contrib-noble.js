@@ -42,13 +42,13 @@ module.exports = function(RED) {
         var machineId = os.hostname();
 
         noble.on('discover', function(peripheral) {
-
             var msg = { payload:{peripheralUuid:peripheral.uuid, localName: peripheral.advertisement.localName} };
             msg.peripheralUuid = peripheral.uuid;
             msg.localName = peripheral.advertisement.localName;
             msg.detectedAt = new Date().getTime();
             msg.detectedBy = machineId;
             msg.advertisement = peripheral.advertisement;
+            msg.rssi = peripheral.rssi;
 
             // Check the BLE follows iBeacon spec
             if (peripheral.manufacturerData) {
