@@ -21,15 +21,22 @@ Run as sudo or root
 
 ## How to Install
 
-Run the following command in the root directory of your Node-RED install
+For installing globally the node (NodeRed 0.10.4+) run the following
 
 ```
+npm install -g node-red-contrib-noble
+```
+
+or locally within your user data directory (by default, $HOME/.node-red):
+
+```
+cd $HOME/.node-red
 npm install node-red-contrib-noble
 ```
 
 ## Status
 
-The node is at an early stage but is already usable. Currently the node provides only support for scanning for BLE devices. We shall be adding this functionality soon.
+The node is at an early stage but is already usable. Currently the node provides only support for scanning for BLE devices. We shall be adding more functionality soon.
 
 License
 -------

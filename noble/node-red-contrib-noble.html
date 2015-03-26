@@ -58,6 +58,14 @@
 <script type="text/x-red" data-help-name="scan ble">
     <p>This node allows scanning for BLE devices, restricted if necessary by the services they offer.</p>
     <p>This node will generate one message per BLE device detected according to the node configuration.</p>
+    <p>The node will also generate events according to the status of the bluetooth interface when it changes. Those status messages include:</p>
+     <ul>
+        <li>Whether there was an <b>msg.error</b></li>
+        <li>Whether there was a <b>msg.stateChange</b></li>
+        <li>The current <b>msg.state</b> of the interface</li>
+        <li>The <b>msg.payload</b> will be empty in this case to prevent mistreating status messages as BLE detection messages.</li>
+    </ul>
+
     <p>The <b>msg.payload</b> will contain the <i>peripheral uuid</i> and the <i>local name</i> of the BLE device detected.</p>
     <p>Additionally it will set the following values:</p>
     <ul>

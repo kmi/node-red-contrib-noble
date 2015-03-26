@@ -23,6 +23,7 @@
 
 module.exports = function(RED) {
 
+    "use strict";
     var noble = require('noble');
     var os = require('os');
     
@@ -40,6 +41,7 @@ module.exports = function(RED) {
 
         var node = this;
         var machineId = os.hostname();
+        var scanning = false;
 
         noble.on('discover', function(peripheral) {
             var msg = { payload:{peripheralUuid:peripheral.uuid, localName: peripheral.advertisement.localName} };
@@ -85,36 +87,91 @@ module.exports = function(RED) {
             node.send(msg);
         });
 
+        // Take care of starting the scan and sending the status message
+        function startScan(stateChange, error) {
+            if (!node.scanning) {
+                node.scanning = true;
+                // send status message
+                var msg = {
+                    statusUpdate: true,
+                    error: error,
+                    stateChange: stateChange,
+                    state: noble.state
+                };
+                node.send(msg);
+                // start the scan
+                noble.startScanning(node.uuids, node.duplicates);
+                node.log("Scanning for BLEs started. UUIDs: " + node.uuids + " - Duplicates allowed: " + node.duplicates);
+            }
+        }
+
+        // Take care of stopping the scan and sending the status message
+        function stopScan(stateChange, error) {
+            if (node.scanning) {
+                node.scanning = false;
+                // send status message
+                var msg = {
+                    statusUpdate: true,
+                    error: error,
+                    stateChange: stateChange,
+                    state: noble.state
+                };
+                node.send(msg);
+                // start the scan
+                noble.stopScanning();
+                if (error) {
+                    node.warn('BLE scanning stopped due to change in adapter state.');
+                } else {
+                    node.info('BLE scanning stopped.');
+                }
+            }
+        }
+
         // deal with state changes
         noble.on('stateChange', function(state) {
             if (state === 'poweredOn') {
-                noble.startScanning(node.uuids, node.duplicates);
+                startScan(true, false);
             } else {
-                noble.stopScanning();
+                if (node.scanning) {
+                    stopScan(true, true);
+                }
             }
         });
 
         // start initially
         if (noble.state === 'poweredOn') {
-            noble.startScanning(node.uuids, node.duplicates);
+            startScan(false, false);
         } else {
-            this.warn("Unable to start BLE scan. Adapter state: " + noble.state);
+            // send status message
+            var msg = {
+                statusUpdate: true,
+                error: true,
+                stateChange: false,
+                state: noble.state
+            };
+
+            // TODO: Catch a global event instead eventually
+            setTimeout(function(){
+                node.send(msg);
+            }, 3000);
+
+            node.warn('Unable to start BLE scan. Adapter state: ' + noble.state);
         }
     
         this.on("close", function() {
             // Called when the node is shutdown - eg on redeploy.
             // Allows ports to be closed, connections dropped etc.
             // eg: this.client.disconnect();
-            noble.stopScanning();
+            stopScan(false, false);
         });
 
-        noble.on('scanStart', function() {
-            node.log("Scanning for BLEs started. UUIDs: " + node.uuids + " - Duplicates allowed: " + node.duplicates);
-        });
-
-        noble.on('scanStop', function() {
-            node.log("Scanning for BLEs stopped. ");
-        });
+        //noble.on('scanStart', function() {
+        //    node.debug("Scan of BLEs started");
+        //});
+        //
+        //noble.on('scanStop', function() {
+        //    node.debug("Scan of BLEs stopped");
+        //});
     }
     
     // Register the node by name. This must be called before overriding any of the
