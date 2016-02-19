@@ -122,7 +122,7 @@ module.exports = function(RED) {
                 if (error) {
                     node.warn('BLE scanning stopped due to change in adapter state.');
                 } else {
-                    node.info('BLE scanning stopped.');
+                    node.log('BLE scanning stopped.');
                 }
             }
         }
