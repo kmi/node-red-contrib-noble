@@ -20,10 +20,9 @@
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * based on the initial node by Charalampos Doukas http://blog.buildinginternetofthings.com/2013/10/12/using-node-red-to-scan-for-ble-devices/
  */
-
 module.exports = function(RED) {
-
     "use strict";
+
     var noble = require('noble');
     var os = require('os');
     
@@ -90,7 +89,6 @@ module.exports = function(RED) {
         // Take care of starting the scan and sending the status message
         function startScan(stateChange, error) {
             if (!node.scanning) {
-                node.scanning = true;
                 // send status message
                 var msg = {
                     statusUpdate: true,
@@ -100,15 +98,17 @@ module.exports = function(RED) {
                 };
                 node.send(msg);
                 // start the scan
-                noble.startScanning(node.uuids, node.duplicates);
-                node.log("Scanning for BLEs started. UUIDs: " + node.uuids + " - Duplicates allowed: " + node.duplicates);
+                noble.startScanning(node.uuids, node.duplicates, function() {
+                    node.log("Scanning for BLEs started. UUIDs: " + node.uuids + " - Duplicates allowed: " + node.duplicates);
+                    node.status({fill:"green",shape:"dot",text:"started"});
+                    node.scanning = true;
+                });
             }
         }
 
         // Take care of stopping the scan and sending the status message
         function stopScan(stateChange, error) {
             if (node.scanning) {
-                node.scanning = false;
                 // send status message
                 var msg = {
                     statusUpdate: true,
@@ -117,12 +117,14 @@ module.exports = function(RED) {
                     state: noble.state
                 };
                 node.send(msg);
-                // start the scan
-                noble.stopScanning();
+                // stop the scan
+                noble.stopScanning(function() {
+                    node.log('BLE scanning stopped.');
+                    node.status({fill:"red",shape:"ring",text:"stopped"});
+                    node.scanning = false;
+                });
                 if (error) {
                     node.warn('BLE scanning stopped due to change in adapter state.');
-                } else {
-                    node.log('BLE scanning stopped.');
                 }
             }
         }
@@ -158,11 +160,13 @@ module.exports = function(RED) {
             node.warn('Unable to start BLE scan. Adapter state: ' + noble.state);
         }
     
-        this.on("close", function() {
+        node.on("close", function() {
             // Called when the node is shutdown - eg on redeploy.
             // Allows ports to be closed, connections dropped etc.
             // eg: this.client.disconnect();
             stopScan(false, false);
+            // remove listeners since they get added again on deploy
+            noble.removeAllListeners();
         });
 
         //noble.on('scanStart', function() {
