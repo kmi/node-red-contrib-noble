@@ -66,6 +66,8 @@
         <li>The <b>msg.payload</b> will be empty in this case to prevent mistreating status messages as BLE detection messages.</li>
     </ul>
 
+    <p>The node will begin scanning after its deployed, and will not stop until it is deployed again.  It can be useful to turn on and off scanning to conserve energy and force scan requests to be sent triggering devices to respond.  To control scanning, send a message containing <code>msg.scan=false</code> to turn off scanning, and <code>msg.scan=true</code> to turn it on.</p>
+
     <p>The <b>msg.payload</b> will contain the <i>peripheral uuid</i> and the <i>local name</i> of the BLE device detected.</p>
     <p>Additionally it will set the following values:</p>
     <ul>
@@ -100,7 +102,7 @@
             duplicates: {value:false},
             name: {value:""}
         },
-        inputs:0,               // set the number of inputs - only 0 or 1
+        inputs:1,               // set the number of inputs - only 0 or 1
         outputs:1,              // set the number of outputs - 0 to n
         // set the icon (held in icons dir below where you save the node)
         icon: "bluetooth.png",     // saved in  icons/myicon.png
