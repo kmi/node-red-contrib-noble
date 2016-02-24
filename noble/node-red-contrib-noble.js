@@ -162,11 +162,16 @@ module.exports = function(RED) {
 
         // control scanning
         node.on('input', function (msg) {
-            if (msg.scan && msg.scan === true) {
-                startScan(false, false);
-            } else if (msg.scan === false) {
-                stopScan(false, false);
+            if (msg.hasOwnProperty("payload") && typeof msg.payload == "object" && msg.payload.hasOwnProperty("scan")) {
+                if (msg.payload.scan === true) {
+                    startScan(false, false);
+                    return;
+                } else if (msg.payload.scan === false) {
+                    stopScan(false, false);
+                    return;
+                }
             }
+            node.warn("Incorrect input, ignoring. See the documentation in the info tab. ");
         });
 
     

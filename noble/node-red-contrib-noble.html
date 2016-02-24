@@ -66,10 +66,10 @@
         <li>The <b>msg.payload</b> will be empty in this case to prevent mistreating status messages as BLE detection messages.</li>
     </ul>
 
-    <p>The node will begin scanning after its deployed, and will not stop until it is deployed again.  It can be useful to turn on and off scanning to conserve energy and force scan requests to be sent triggering devices to respond.  To control scanning, send a message containing <code>msg.scan=false</code> to turn off scanning, and <code>msg.scan=true</code> to turn it on.</p>
+    <p>The node will begin scanning after it is deployed, and will not stop until it is deployed again.  It can be useful to turn on and off scanning to conserve energy and force scan requests to be sent triggering devices to respond.  To control scanning, you may send a message containing <code>msg.payload.scan=false</code> to turn off scanning, and <code>msg.payload.scan=true</code> to turn it on.</p>
 
-    <p>The <b>msg.payload</b> will contain the <i>peripheral uuid</i> and the <i>local name</i> of the BLE device detected.</p>
-    <p>Additionally it will set the following values:</p>
+    <p>The output will contain in <b>msg.payload</b> the <i>peripheral uuid</i> and the <i>local name</i> of the BLE device detected.</p>
+    <p>Additionally the node will set the following values:</p>
     <ul>
         <li>Sets the <b>msg.peripheralUuid</b> to the <i>peripheral uuid</i> of the BLE device detected.</li>
         <li>Sets the <b>msg.rssi</b> to the <i>received signal strength indicator (RSSI)</i> of the BLE device detected.</li>
