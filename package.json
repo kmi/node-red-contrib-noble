@@ -25,5 +25,10 @@
         "name": "Charalampos Doukas",
         "email": "charalampos.doukas@create-net.org",
         "url": "http://blog.buildinginternetofthings.com"
+    },
+    "author": {
+        "name": "Mike Blackstock",
+        "email": "mike@mblackstock.com",
+        "url": "http://www.mblackstock.com"
     }
 }
