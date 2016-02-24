@@ -159,6 +159,21 @@ module.exports = function(RED) {
 
             node.warn('Unable to start BLE scan. Adapter state: ' + noble.state);
         }
+
+        // control scanning
+        node.on('input', function (msg) {
+            if (msg.hasOwnProperty("payload") && typeof msg.payload == "object" && msg.payload.hasOwnProperty("scan")) {
+                if (msg.payload.scan === true) {
+                    startScan(false, false);
+                    return;
+                } else if (msg.payload.scan === false) {
+                    stopScan(false, false);
+                    return;
+                }
+            }
+            node.warn("Incorrect input, ignoring. See the documentation in the info tab. ");
+        });
+
     
         node.on("close", function() {
             // Called when the node is shutdown - eg on redeploy.
@@ -169,13 +184,6 @@ module.exports = function(RED) {
             noble.removeAllListeners();
         });
 
-        //noble.on('scanStart', function() {
-        //    node.debug("Scan of BLEs started");
-        //});
-        //
-        //noble.on('scanStop', function() {
-        //    node.debug("Scan of BLEs stopped");
-        //});
     }
     
     // Register the node by name. This must be called before overriding any of the
