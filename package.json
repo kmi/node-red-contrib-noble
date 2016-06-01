@@ -1,36 +1,42 @@
 {
-    "name"          : "node-red-contrib-noble",
-    "version"       : "0.2.0",
-    "description"   : "A Node-RED node that uses Noble to interact with BLEs",
-    "dependencies"  : {
-        "noble": ">=0.2.7"
+  "name": "node-red-contrib-noble",
+  "version": "0.3.0",
+  "description": "A Node-RED node that uses Noble to interact with BLEs",
+  "dependencies": {
+    "noble": ">=0.2.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kmi/node-red-contrib-noble"
+  },
+  "license": "Apache",
+  "keywords": [
+    "node-red",
+    "noble",
+    "ble",
+    "bluetooth",
+    "scan"
+  ],
+  "node-red": {
+    "nodes": {
+      "noble": "noble/node-red-contrib-noble.js"
+    }
+  },
+  "author": {
+    "name": "Carlos Pedrinaci",
+    "email": "carlos.pedrinaci@open.ac.uk",
+    "url": "http://www.cpedrinaci.net"
+  },
+  "contributors": [
+    {
+      "name": "Charalampos Doukas",
+      "email": "charalampos.doukas@create-net.org",
+      "url": "http://blog.buildinginternetofthings.com"
     },
-    "repository" : {
-        "type":"git",
-        "url":"https://github.com/kmi/node-red-contrib-noble"
-    },
-    "license": "Apache",
-    "keywords": [ "node-red", "noble", "ble", "bluetooth", "scan" ],
-    "node-red"      : {
-        "nodes"     : {
-            "noble": "noble/node-red-contrib-noble.js"
-        }
-    },
-    "author": {
-        "name": "Carlos Pedrinaci",
-        "email": "carlos.pedrinaci@open.ac.uk",
-        "url": "http://www.cpedrinaci.net"
-    },
-    "contributors": [
-        {
-            "name": "Charalampos Doukas",
-            "email": "charalampos.doukas@create-net.org",
-            "url": "http://blog.buildinginternetofthings.com"
-        },
-        {
-            "name": "Mike Blackstock",
-            "email": "mike@mblackstock.com",
-            "url": "http://www.mblackstock.com"
-        }
-    ]
+    {
+      "name": "Mike Blackstock",
+      "email": "mike@mblackstock.com",
+      "url": "http://www.mblackstock.com"
+    }
+  ]
 }
