@@ -21,14 +21,16 @@
         "email": "carlos.pedrinaci@open.ac.uk",
         "url": "http://www.cpedrinaci.net"
     },
-    "author": {
-        "name": "Charalampos Doukas",
-        "email": "charalampos.doukas@create-net.org",
-        "url": "http://blog.buildinginternetofthings.com"
-    },
-    "author": {
-        "name": "Mike Blackstock",
-        "email": "mike@mblackstock.com",
-        "url": "http://www.mblackstock.com"
-    }
+    "contributors": [
+        {
+            "name": "Charalampos Doukas",
+            "email": "charalampos.doukas@create-net.org",
+            "url": "http://blog.buildinginternetofthings.com"
+        },
+        {
+            "name": "Mike Blackstock",
+            "email": "mike@mblackstock.com",
+            "url": "http://www.mblackstock.com"
+        }
+    ]
 }
